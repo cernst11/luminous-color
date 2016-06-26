@@ -20,29 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <p>An example of <code>&lt;luminous-color&gt;</code>:</p>
 
-    <p>Make words! <button id="saybtn">Say Something</button></p>
-    <p>Make lasers! <button id="laserbtn">Fire lasers</button></p>
-
-    <luminous-color>
+    <luminous-color deviceurl="http://192.168.1.112:3000/mode/effects">
 
     </luminous-color>
 
-    <script>
-      var seedElement = document.querySelector('luminous-color');
-
-      document.querySelector('#saybtn').addEventListener('click', function() {
-        alert(seedElement.sayHello('Hallo!'));
-      });
-
-      document.querySelector('#laserbtn').addEventListener('click', function() {
-        seedElement.fireLasers();
-      });
-
-      document.addEventListener("luminous-color-lasers", function(e) {
-        console.log(e.detail.sound);
-      });
-
-    </script>
 
   </body>
 </html>

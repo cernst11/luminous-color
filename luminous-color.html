@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/hardware-icons.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <!--<link rel="import" href="../socket-io/socket-io.html">-->
 <script src="lib/socket.io.js"></script>
@@ -93,6 +94,17 @@ Example:
 
 
     </style>
+    <iron-ajax
+      auto
+      method="POST"
+      url="{{deviceurl}}"
+      content-type="application/x-www-form-urlencoded"
+      body="{{options}}"
+      handle-as="json"
+      last-response="{{handleResponse}}">
+    </iron-ajax>
+
+
     <paper-card elevation="1" class="cardContainer">
       <div class="cardContainer-content">
         <div class="card-content">
@@ -126,9 +138,11 @@ Example:
 
             </div>
             <luminous-color-picker id="color-picker" immediate-color="{{immediateColor}}"
-                                slider-value="{{sliderValue}}"></luminous-color-picker>
+                                slider-value="{{sliderValue}}">
+            </luminous-color-picker>
 
           </div>
+
         </iron-collapse>
 
         <script>
@@ -162,23 +176,38 @@ Example:
         messages: [],
         clients: {},
 
+        deviceurl:{
+          type: String
+        },
 
         sliderValue: {
           type: String
         },
         immediateColor: {
-          type: Object
+          type: Object,
+          notify:true
         },
         modeSelection: {
-          type: String
+          type: String,
+          notify : true
         },
-        brightness: {}
+        brightness: {},
+
+        url:{
+          //computed: 'computeURL(deviceURL)'
+        },
+
+
+        options:{
+            computed: 'computeMode(modeSelection, immediateColor)'
+        }
       },
 
 
       observers: [
         '_colorChanged(immediateColor.*, immediateColor)',
-        '_sendMode(modeSelection)',
+        //'computeMode(modeSelection)',
+        //'_sendMode(options)',
         '_brightnessChanged(sliderValue)'
       ],
 
@@ -225,12 +254,6 @@ Example:
 
       connect: function () {
 
-
-        /*        var openMessage = {connection: 'Connected'};
-         this.$.socketIo.connect();
-
-
-         this.outMessage = {event : 'connection', data : openMessage};*/
       }
       ,
 
@@ -245,27 +268,24 @@ Example:
       _colorChanged: function (immediateColorValue, immediateColor) {
         var hexColor = "0x" + ((1 << 24) + (immediateColor.red << 16) + (immediateColor.green << 8) + immediateColor.blue).toString(16).slice(1);
         socket.emit('mode', {mode: 'color', color: hexColor});
-
         this.customStyle['--power-button-color'] = hexColor.replace('0x', '#');
         this.updateStyles();
 
       },
-
-      _sendMode: function (selectedMode) {
-        console.log('Emitted' + selectedMode);
-        socket.emit('mode', {mode: selectedMode});
-
+      /**
+       * Compute the REST response
+       * @param modeSelection The mode or effect to send to the controller
+       * @param immediateColor The color to send
+       * @returns {{mode: *, color: *}} The param object to send
+         */
+      computeMode: function (modeSelection, immediateColor ){
+        var hexColor = "0x" + ((1 << 24) + (immediateColor.red << 16) + (immediateColor.green << 8) + immediateColor.blue).toString(16).slice(1);
+        return {mode: modeSelection, color: hexColor};
       },
 
-      _selectedMode: function (e) {
-        var selectedItem = e.target.selectedItem;
-        //socket.emit('mode', {mode: selectedItem});
-        console.log(selectedItem.val);
-
-      },
-
-      breathe: function () {
-        socket.emit('mode', {mode: 'breathe'});
+      computeURL: function (deviceURL){
+        console.log(deviceURL);
+        return [deviceURL, 'effects', 'mode'].join('/');
       },
 
       _togglePower : function(e){
@@ -279,39 +299,6 @@ Example:
         socket.emit('stripProperties', {property: 'brightness', brightnessLevel: brightness});
       },
 
-
-
-
-      // Element Behavior
-
-
-      /**
-       * Sometimes it's just nice to say hi.
-       *
-       * @param {string} greeting A positive greeting.
-       * @return {string} The full greeting.
-       */
-      sayHello: function (greeting) {
-        var response = greeting || 'Hello World!';
-        return 'luminous-color says, ' + response;
-      },
-
-      /**
-       * The `luminous-color-lasers` event is fired whenever `fireLasers` is called.
-       *
-       * @event luminous-color-lasers
-       * @detail {{sound: String}}
-       */
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */
-      fireLasers: function () {
-        this.fire('luminous-color-lasers', {sound: 'Pew pew!'});
-      }
     })
     ;
   </script>
