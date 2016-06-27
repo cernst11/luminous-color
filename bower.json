@@ -1,9 +1,7 @@
 {
   "name": "luminous-color",
   "version": "0.0.1",
-  "authors": [
-    "Christian Ernst <anonymous@example.com>",
-    "ignore": [
+  "ignore": [
     "source",
     "spec",
     ".bowerrc",
@@ -14,7 +12,10 @@
     "gruntfile.js",
     "package.json",
     "README.md"
-    ],
+  ],
+  "authors": [
+    "Christian Ernst <anonymous@example.com>",
+
 
   ],
   "description": "An element to control ws2812 leds.",
