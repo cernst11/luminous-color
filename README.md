@@ -17,8 +17,8 @@ Then, go ahead and download the element's dependencies:
 
 ## Using luminous-color
 
-If you wish to work on your element in isolation, we recommend that you use
-[Polyserve](https://github.com/PolymerLabs/polyserve) to keep your element's
+If you wish to work on luminous-color in isolation, it is recommended that you use
+[Polyserve](https://github.com/PolymerLabs/polyserve) to keep the element's
 bower dependencies in line. You can install it via:
 
     npm install -g polyserve
@@ -27,8 +27,8 @@ And you can run it via:
 
     polyserve
 
-Once running, you can preview your element at
-`http://localhost:8080/components/luminous-color/`, where `luminous-color` is the name of the directory containing it.
+Once running, you can preview luminous-color  at
+`http://localhost:8080/components/luminous-color/`
 
 
 
